@@ -5,25 +5,43 @@ import {
   Text,
   StyleSheet,
   View,
-  TextInput,
-  TouchableOpacity,
   Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth'
+
+const auth = getAuth();
 
 export default function Signup({ navigation }) {
-  const [gender, setGender] = useState(null)
-
   const genderOptions = ["Male", "Female"];
+  const [gender, setGender] = useState(null)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [name, setName] = useState("")
+  const [age, setAge] = useState("")
+  const signUp = () =>{
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      console.log(user)
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      
+    });
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.Inputcontainer}>
-        <Input placeholder="Email Address" />
-        <Input placeholder="Password" secureTextEntry />
-        <Input placeholder="Full Name" />
-        <Input placeholder="Age" />
+        <Input placeholder="Email Address" onChangeText={(text)=> setEmail(text)} />
+        <Input placeholder="Password" secureTextEntry onChangeText={(text)=> setPassword(text)} />
+        <Input placeholder="Full Name" onChangeText={(text)=> setName(text)} />
+        <Input placeholder="Age" onChangeText={(text)=> setAge(text)} />
         <View>
           <Text style={{marginVertical: 20}}>Select gender</Text>
         </View>
@@ -55,6 +73,7 @@ export default function Signup({ navigation }) {
         <Button
           title="Signup"
           customStyles={{ alignSelf: "center", marginBottom: 20 }}
+          onPress={signUp}
         />
         <Pressable
           style={{ flexDirection: "row" }}
