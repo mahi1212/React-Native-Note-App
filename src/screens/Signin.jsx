@@ -21,10 +21,12 @@ export default function Signin({navigation}) {
       <View style={styles.Inputcontainer}>
         <Input placeholder="Email Address" />
         <Input placeholder="Password" secureTextEntry />
-        <Button title="Signin" customStyles={{ alignSelf: "center", marginTop: 10 }} ></Button>
+        
       </View>
+
       {/* link to signUp*/}
       <View style={styles.link} >
+        <Button title="Signin" customStyles={{ alignSelf: "center", marginBottom: 20 }} ></Button>
         <Pressable style={{flexDirection: 'row'}} onPress={()=> {navigation.navigate("Signup")}}>
           <Text>Don't have an account? </Text>
           <Text style={{ color: "green" }}>Signup</Text>

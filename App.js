@@ -21,7 +21,7 @@ export default function App() {
   const user = false; //not authenticated
   return (
     <NavigationContainer theme={AppTheme}>
-      <Stack.Navigator>
+      <Stack.Navigator >
         {
           user ? <>
             <Stack.Screen name="Home" component={Home} />
