@@ -1,37 +1,45 @@
 import {
   SafeAreaView,
   Image,
-  StatusBar,
   Text,
   StyleSheet,
   View,
-  TextInput,
-  TouchableOpacity,
   Pressable,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { StatusBar } from 'expo-status-bar'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from "../../App";
 
 export default function Signin({navigation}) {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const signin = () =>{
+    signInWithEmailAndPassword(auth, email, password).then((res)=>{
+      console.log("Successfully loged in -->", res)
+    })
+  }
   return (
     <SafeAreaView style={{flex: 1}}>
       <Image source={require("../../assets/signin.png")} style={{ width: "100%", height: 300 }} />
       <Text style={styles.noteText}>Never forget your notes</Text>
       <View style={styles.Inputcontainer}>
-        <Input placeholder="Email Address" />
-        <Input placeholder="Password" secureTextEntry />
-        
+        <Input placeholder="Email Address" onChangeText={(text)=> setEmail(text)} autoCapitalize="none" />
+        <Input placeholder="Password" onChangeText={(text)=> setPassword(text)} secureTextEntry />
       </View>
 
       {/* link to signUp*/}
       <View style={styles.link} >
-        <Button title="Signin" customStyles={{ alignSelf: "center", marginBottom: 20 }} ></Button>
+        <Button title="Signin" onPress={signin} customStyles={{ alignSelf: "center", marginBottom: 20 }} ></Button>
         <Pressable style={{flexDirection: 'row'}} onPress={()=> {navigation.navigate("Signup")}}>
           <Text>Don't have an account? </Text>
           <Text style={{ color: "green" }}>Signup</Text>
         </Pressable>
       </View>
+      <StatusBar style={{color: 'black'}} />
     </SafeAreaView>
   );
 }

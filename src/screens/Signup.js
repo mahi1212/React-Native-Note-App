@@ -1,46 +1,58 @@
 import {
   SafeAreaView,
   Image,
-  StatusBar,
   Text,
   StyleSheet,
   View,
   Pressable,
 } from "react-native";
+import { StatusBar } from 'expo-status-bar'
+import {addDoc, collection, getDocs, doc, onSnapshot, query, where } from 'firebase/firestore'
 import React, { useState } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth'
-
-const auth = getAuth();
-
+import { createUserWithEmailAndPassword} from 'firebase/auth'
+import {auth, db} from "../../App"
+import { showMessage } from "react-native-flash-message";
 export default function Signup({ navigation }) {
+  const[loading, setLoading] = useState(true)
   const genderOptions = ["Male", "Female"];
   const [gender, setGender] = useState(null)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
   const [age, setAge] = useState("")
-  const signUp = () =>{
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in 
-      const user = userCredential.user;
-      console.log(user)
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      
-    });
+  const signUp = async () =>{
+    setLoading(true)
+    try{
+      // create user auth 
+      const result = await createUserWithEmailAndPassword(auth, email, password)
+      // add user profile to database
+      await addDoc(collection(db, 'users'), {
+        name: name,
+        email: email,
+        age: age,
+        gender: gender,
+        uid : result.user.uid,
+      })
+      setLoading(false)
+    }catch(error){
+      console.log(error)
+      showMessage({
+        message: "Error!",
+        type:"danger"
+      })
+      setLoading(false)
+    }
+    
   }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.Inputcontainer}>
-        <Input placeholder="Email Address" onChangeText={(text)=> setEmail(text)} />
+        <Input placeholder="Email Address" onChangeText={(text)=> setEmail(text)} autoCapitalize="none" />
         <Input placeholder="Password" secureTextEntry onChangeText={(text)=> setPassword(text)} />
-        <Input placeholder="Full Name" onChangeText={(text)=> setName(text)} />
+        <Input placeholder="Full Name" onChangeText={(text)=> setName(text)} autoCapitalize="words" />
         <Input placeholder="Age" onChangeText={(text)=> setAge(text)} />
         <View>
           <Text style={{marginVertical: 20}}>Select gender</Text>
@@ -85,6 +97,7 @@ export default function Signup({ navigation }) {
           <Text style={{ color: "green" }}>Signin</Text>
         </Pressable>
       </View>
+      <StatusBar style={{color: 'black'}} />
     </SafeAreaView>
   );
 }
