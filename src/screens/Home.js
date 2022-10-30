@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { AntDesign } from '@expo/vector-icons';
 import { collection, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '../../App';
+import { auth, db } from '../../App';
 import { showMessage } from 'react-native-flash-message';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { signOut } from 'firebase/auth';
 
 export default function Home({ navigation, route, user }) {
   const [notes, setNotes] = useState([])
@@ -32,10 +34,10 @@ export default function Home({ navigation, route, user }) {
         }}
         style={{ height: 100, backgroundColor: color, marginBottom: 10, borderRadius: 10, padding: 10 }}>
         <Pressable style={{ position: 'absolute', alignSelf: 'flex-end', padding: 10, zIndex: 5 }}
-          onPress={()=>{
+          onPress={() => {
             deleteDoc(doc(db, "notes", item.id))
             showMessage({
-              message:'Deleted note'
+              message: 'Deleted note'
             })
           }}
         >
@@ -49,7 +51,14 @@ export default function Home({ navigation, route, user }) {
   const onPressCreate = () => {
     navigation.navigate("Create")
   }
-  
+  const signOutButton = () => {
+    signOut(auth).then(() => {
+      // Sign-out successful.
+    }).catch((error) => {
+      // An error happened.
+    });
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
@@ -57,9 +66,14 @@ export default function Home({ navigation, route, user }) {
           style={styles.header}
         >
           <Text style={{ fontSize: 22, fontWeight: '700' }}>My Notes</Text>
-          <Pressable onPress={onPressCreate}>
-            <AntDesign name="pluscircleo" size={24} color="black" />
-          </Pressable>
+          <View style={{flexDirection:'row'}}>
+            <Pressable onPress={onPressCreate} style={{marginHorizontal:10}}>
+              <AntDesign name="pluscircleo" size={24} color="black" />
+            </Pressable>
+            <Pressable onPress={signOutButton}>
+              <MaterialCommunityIcons name="logout" size={24} color="black" />
+            </Pressable>
+          </View>
         </View>
         <FlatList
           data={notes}
