@@ -26,6 +26,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth();
 export const db = getFirestore();
+// signOut(auth).then(() => {
+//   // Sign-out successful.
+// }).catch((error) => {
+//   // An error happened.
+// });
 
 const AppTheme = {
   ...DefaultTheme,
@@ -69,10 +74,10 @@ export default function App() {
         {
           user ? <>
             <Stack.Screen name="Home" options={{headerShown: false}}> 
-              {/* Passign user in screen */}
+              {/* Passing user in screen */}
               {(props) => <Home {...props} user={user} />}
             </Stack.Screen>
-            <Stack.Screen name="Create"> 
+            <Stack.Screen name="Create" options={{headerShown:false}}> 
               {(props) => <Create {...props} user={user} />}
             </Stack.Screen> 
             <Stack.Screen name="Update" component={Update} />
