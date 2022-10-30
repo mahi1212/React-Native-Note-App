@@ -2,8 +2,7 @@ import { View, Text, SafeAreaView, StyleSheet, Pressable, ActivityIndicator, Scr
 import React, { useState } from 'react'
 import Input from '../components/Input'
 import Button from '../components/Button'
-import { async } from '@firebase/util'
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'
+import {  doc, updateDoc } from 'firebase/firestore'
 import { db } from '../../App'
 import { showMessage } from 'react-native-flash-message'
 
