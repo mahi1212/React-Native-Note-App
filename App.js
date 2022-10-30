@@ -77,7 +77,7 @@ export default function App() {
               {/* Passing user in screen */}
               {(props) => <Home {...props} user={user} />}
             </Stack.Screen>
-            <Stack.Screen name="Create" options={{headerShown:false}}> 
+            <Stack.Screen name="Create"> 
               {(props) => <Create {...props} user={user} />}
             </Stack.Screen> 
             <Stack.Screen name="Update" component={Update} />

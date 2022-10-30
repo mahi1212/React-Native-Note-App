@@ -1,29 +1,35 @@
-import { View, Text, SafeAreaView, StyleSheet, Pressable } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Pressable, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import { async } from '@firebase/util'
 import { addDoc, collection } from 'firebase/firestore'
 import { db } from '../../App'
+import { showMessage } from 'react-native-flash-message'
 
-const noteColorOptions = ["red", "green", "blue"]
-export default function Create({navigation, route, user}) {
+export default function Create({ navigation, user }) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [noteColor, setNoteColor] = useState("blue")
   const [loading, setLoading] = useState(false)
+  const noteColorOptions = ["red", "green", "blue"]
 
   const createNote = async () => {
     setLoading(true)
-    try{
+    try {
       await addDoc(collection(db, "notes"), {
-        title:title,
-        description:description,
-        color:noteColor,
+        title: title,
+        description: description,
+        color: noteColor,
         uid: user.uid
       })
       setLoading(false)
-    }catch(e){
+      showMessage({
+        message: "Notes created Successfully",
+        type: "success"
+      })
+      navigation.goBack()
+    } catch (e) {
       console.log(e)
       setLoading(false)
     }
@@ -64,11 +70,13 @@ export default function Create({navigation, route, user}) {
             </Pressable>
           )
         })}
-        <Button
-          title="SUBMIT NOTE"
-          customStyles={{ alignSelf: "center", marginBottom: 20, width: '100%', marginTop: 30 }}
-          onPress={createNote}
-        />
+        {loading ? <ActivityIndicator /> :
+          <Button
+            title="SUBMIT NOTE"
+            customStyles={{ alignSelf: "center", marginBottom: 20, width: '100%', marginTop: 30 }}
+            onPress={createNote}
+          />}
+
       </View>
 
 
